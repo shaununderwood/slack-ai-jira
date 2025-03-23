@@ -44,12 +44,60 @@ app.event('message', async ({ event, say }) => {
 
   console.log(`Message from user ${user} in channel ${channel}: ${text}`);
 
-  if (text.includes('create jira ticket')) {
-    await say(`Got it, <@${user}>! Creating a Jira ticket... 🛠️`);
-  } else if (text.includes('status update')) {
-    await say(`Sure, <@${user}>! Here's your status update: 📊 All systems go.`);
+  const parsed = JSON.parse(await queryOllama(text));
+  
+  console.log(JSON.stringify({ parsed }))
+  await say(`parsed: ${JSON.stringify({ parsed })}`);
+
+  switch (parsed.intent) {
+    case 'create_ticket':
+      await createJiraTicket(parsed.details);
+      await say(`✅ Ticket created: ${parsed.details.summary}`);
+      break;
+    case 'status_update':
+      const status = await getStatusUpdate(parsed.details);
+      await say(`📊 Status: ${status}`);
+      break;
+    default:
+      await say("🤔 I couldn't understand that. Try 'create Jira ticket' or 'status update'.");
   }
+
 });
+async function createJiraTicket(instructions: any) {
+  console.log({ createJiraTicket: instructions })
+}
+async function getStatusUpdate(instructions: any) {
+  console.log({ getStatusUpdate: instructions })
+}
+export async function queryOllama(message: string) {
+  const prompt = `You are an AI assistant integrated into a Slack bot that can take actions based on messages.
+  Respond with JSON only. No text before or after. Given the message below, return an object describing the user's intent.
+  
+  Message: "${message}"
+  
+  Respond in this exact format:
+  {
+    "intent": "create_ticket" | "status_update" | "unknown",
+    "summary": "Short summary of task",
+    "ticket": "the ticket's id, if one is found"
+  }`;
+  const response = await fetch('http://localhost:11434/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'llama3.2', // or whatever you've pulled via `ollama pull`
+      prompt,
+      stream: false
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Ollama returned error: ${response.status}`);
+  }
+
+  const data = await response.json()
+  return data.response; // this is a string (the LLM's full response)
+}
 
 (async () => {
   await app.start(Number(process.env.PORT) || 3000);
