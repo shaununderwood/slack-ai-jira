@@ -1,12 +1,12 @@
 import { config } from './config';
-import { setupSlackHandlers, slackApp } from './services/slack.service';
+import SlackService from './services/slack.service';
 import JiraService from './services/jira.service';
 
 const jiraService = new JiraService(config.jira);
-setupSlackHandlers(jiraService);
+const slackService = new SlackService(config.slack, jiraService);
 
 // Start the app
 (async () => {
-  await slackApp.start(config.slack.port);
+  await slackService.start();
   console.log("⚡️ Slack bot is running!");
 })();

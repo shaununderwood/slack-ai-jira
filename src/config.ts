@@ -7,6 +7,7 @@ export const config = {
     signingSecret: process.env.SLACK_SIGNING_SECRET || '',
     botToken: process.env.SLACK_BOT_TOKEN || '',
     port: Number(process.env.PORT) || 3000,
+    endpoints: process.env.SLACK_ENDPOINTS || '/slack/events',
   },
   jira: {
     email: process.env.JIRA_EMAIL || '',
@@ -15,6 +16,6 @@ export const config = {
   },
   ollama: {
     baseUrl: process.env.OLLAMA_BASE_URL || 'http://localhost:11434',
-    model: process.env.OLLAMA_MODEL || 'llama3.1:8b',
+    model: process.env.OLLAMA_MODEL || '',
   }
 } as const; 
