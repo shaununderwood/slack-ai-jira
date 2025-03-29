@@ -1,20 +1,20 @@
-import { App, ExpressReceiver } from "@slack/bolt";
+import { App as SlackApp, ExpressReceiver } from "@slack/bolt";
 import { config } from '../config';
-import { createJiraTicket } from '../services/jira';
 import { queryOllama, OllamaResponse } from '../services/ollama';
+import JiraService from '../services/jira.service';
 
 export const receiver = new ExpressReceiver({
   signingSecret: config.slack.signingSecret,
   endpoints: "/slack/events",
 });
 
-export const app = new App({
+export const slackApp = new SlackApp({
   token: config.slack.botToken,
   receiver,
 });
 
-export function setupSlackHandlers() {
-  app.event("app_mention", async ({ event, say }) => {
+export function setupSlackHandlers(jiraService: JiraService) {
+  slackApp.event("app_mention", async ({ event, say }: { event: any, say: any }) => {
     if ("text" in event) {
       const text = event.text.toLowerCase();
       console.log(`Message received: ${text}`);
@@ -27,7 +27,7 @@ export function setupSlackHandlers() {
     }
   });
 
-  app.event("message", async ({ event, say }) => {
+  slackApp.event("message", async ({ event, say }: { event: any, say: any }) => {
     // Avoid bot echo (don't respond to your own messages)
     if (event.subtype === "bot_message") return;
 
@@ -43,7 +43,7 @@ export function setupSlackHandlers() {
 
       switch (parsed.intent) {
         case "create_ticket":
-          await createJiraTicket({ summary: parsed.summary, projectKey: 'SCRUM' });
+          await jiraService.createTicket({ summary: parsed.summary, projectKey: 'SCRUM' });
           await say(`✅ Ticket created: ${parsed.summary}`);
           break;
         default:
