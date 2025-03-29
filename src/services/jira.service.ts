@@ -1,15 +1,15 @@
-interface CreateTicketParams {
+export interface CreateTicketParams {
   summary: string;
   projectKey: string;
 }
 
-interface JiraConfig {
+export interface JiraConfig {
   email: string;
   apiToken: string;
   domain: string;
 }
 
-class JiraService {
+export default class JiraService {
   private auth: string;
   private config: JiraConfig;
 
@@ -26,42 +26,40 @@ class JiraService {
         project: { key: projectKey },
         summary,
         description: {
-          type: 'doc',
+          type: "doc",
           version: 1,
           content: [
             {
-              type: 'paragraph',
+              type: "paragraph",
               content: [
                 {
-                  type: 'text',
-                  text: `text=${summary}`
-                }
-              ]
-            }
-          ]
+                  type: "text",
+                  text: `text=${summary}`,
+                },
+              ],
+            },
+          ],
         },
-        issuetype: { name: 'Task' }
-      }
+        issuetype: { name: "Task" },
+      },
     };
     const response = await this.sendMessageToJira(body);
-
 
     return response;
   }
 
   async sendMessageToJira(body: any) {
-    const response = await fetch(
-      `https://${this.config.domain}/rest/api/3/issue`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${this.auth}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(body),
-      }
-    );
+    const url = `https://${this.config.domain}/rest/api/3/issue`;
+    const fetchConfig = {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${this.auth}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    };
+    const response = await fetch(url, fetchConfig);
 
     if (!response.ok) {
       const error = await response.text();
@@ -71,5 +69,3 @@ class JiraService {
     return response.json();
   }
 }
-
-export default JiraService;
