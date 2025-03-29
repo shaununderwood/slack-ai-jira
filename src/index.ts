@@ -1,5 +1,5 @@
 import { config } from './config';
-import { setupSlackHandlers, slackApp } from './handlers/slack';
+import { setupSlackHandlers, slackApp } from './services/slack.service';
 import JiraService from './services/jira.service';
 
 const jiraService = new JiraService(config.jira);

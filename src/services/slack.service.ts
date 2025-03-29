@@ -1,7 +1,7 @@
 import { App as SlackApp, ExpressReceiver } from "@slack/bolt";
 import { config } from '../config';
-import { queryOllama, OllamaResponse } from '../services/ollama';
-import JiraService from '../services/jira.service';
+import { queryOllama, OllamaResponse } from './ollama';
+import JiraService from './jira.service';
 
 export const receiver = new ExpressReceiver({
   signingSecret: config.slack.signingSecret,
@@ -56,4 +56,6 @@ export function setupSlackHandlers(jiraService: JiraService) {
       await say("Sorry, I encountered an error processing your message. Please try again.");
     }
   });
-} 
+}
+
+export default slackApp;
