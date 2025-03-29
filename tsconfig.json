@@ -1,16 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2020",                          // Modern JS target
-    "module": "CommonJS",                        // For Node.js compatibility
-    "moduleResolution": "node",
-    "esModuleInterop": true,                     // So we can use 'import x from y'
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,                              // Enable all strict type-checking
-    "skipLibCheck": true,                        // Faster builds by skipping type checks of dependencies
-    "outDir": "dist",                            // Output compiled JS files here
-    "rootDir": "src",                            // Our source files live here
-    "resolveJsonModule": true                    // If you import .json files
+    // Environment setup & latest features
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    // Bundler mode
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules"]
 }

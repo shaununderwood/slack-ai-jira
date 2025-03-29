@@ -8,7 +8,5 @@ const ollamaService = new OllamaService(config.ollama);
 const slackService = new SlackService(config.slack, jiraService, ollamaService);
 
 // Start the app
-(async () => {
-  await slackService.start();
-  console.log("⚡️ Slack bot is running!");
-})();
+await slackService.start();
+console.log("⚡️ Slack bot is running!");
