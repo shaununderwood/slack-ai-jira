@@ -1,3 +1,5 @@
+import { intentClassifier } from "../templates/prompts";
+
 export interface OllamaResponse {
   intent: "create_ticket" | "status_update" | "unknown";
   summary: string;
@@ -17,17 +19,9 @@ export default class OllamaService {
   }
 
   queryOllama = async (message: string): Promise<OllamaResponse> => {
-    const prompt = `You are an AI assistant integrated into a Slack bot that can take actions based on messages.
-    Respond with JSON only. No text before or after. Given the message below, return an object describing the user's intent.
-  
-    Message: "${message}"
-    
-    Respond in this exact format:
-    {
-      "intent": "create_ticket" | "status_update" | "unknown",
-      "summary": "Short summary of task",
-      "ticket": "the ticket's id, if one is found"
-    }`;
+    const prompt = intentClassifier.build({ message });
+    console.log(`Prompt: ${prompt}`);
+
     const url = `${this.config.baseUrl}/api/generate`;
     const response = await fetch(url, {
       method: "POST",
