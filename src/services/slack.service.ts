@@ -21,9 +21,9 @@ export default class SlackService {
     jiraService: JiraService,
     ollamaService: OllamaService
   ) {
+    this.config = config;
     this.jiraService = jiraService;
     this.ollamaService = ollamaService;
-    this.config = config;
 
     const receiver = new ExpressReceiver({
       signingSecret: this.config.signingSecret,
