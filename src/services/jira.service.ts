@@ -43,12 +43,11 @@ export default class JiraService {
         issuetype: { name: "Task" },
       },
     };
-    const response = await this.sendMessageToJira(body);
-
+    const response = await this._sendMessageToJira(body);
     return response;
   }
 
-  async sendMessageToJira(body: any) {
+  private async _sendMessageToJira(body: any) {
     const url = `https://${this.config.domain}/rest/api/3/issue`;
     const fetchConfig = {
       method: "POST",
@@ -63,7 +62,7 @@ export default class JiraService {
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`Jira error: ${response.status} — ${error}`);
+      throw new Error(`JiraService error: ${response.status} — ${error}`);
     }
 
     return response.json();
