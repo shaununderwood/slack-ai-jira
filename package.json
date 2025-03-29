@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build": "tsc",
     "start": "bun src/index.ts",
-    "ngrok": "ngrok http 3000"
+    "ngrok": "ngrok http --url horribly-safe-phoenix.ngrok-free.app 3000"
   },
   "keywords": [],
   "author": "",

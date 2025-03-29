@@ -46,6 +46,7 @@ export default class SlackService {
     this.slackApp.event(
       "app_mention",
       async ({ event, say }: { event: any; say: any }) => {
+        console.log(`"app_mention" event: ${JSON.stringify(event)}`);
         if ("text" in event) {
           const text = event.text.toLowerCase();
           console.log(`Message received: ${text}`);
@@ -62,6 +63,7 @@ export default class SlackService {
     this.slackApp.event(
       "message",
       async ({ event, say }: { event: any; say: any }) => {
+        console.log(`"message" event: ${JSON.stringify(event)}`);
         // Avoid bot echo (don't respond to your own messages)
         if (event.subtype === "bot_message") return;
 
